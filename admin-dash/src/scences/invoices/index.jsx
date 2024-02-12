@@ -26,8 +26,8 @@ const Invoices = () => {
       flex: 1,
     },
     {
-      field: "cost",
-      headerName: "Cost",
+      field: "salary",
+      headerName: "Salary",
       flex: 1,
       renderCell: (params) => (
         <Typography color={colors.greenAccent[500]}>
@@ -37,7 +37,7 @@ const Invoices = () => {
     },
     {
       field: "date",
-      headerName: "Date",
+      headerName: "Entry Date",
       flex: 1,
     },
   ];

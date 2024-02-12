@@ -1,54 +1,69 @@
-import { useState } from "react";
-import FullCalendar from "@fullcalendar/react";
-import dayGridPlugin from "@fullcalendar/daygrid";
-import timeGridPlugin from "@fullcalendar/timegrid";
-import interactionPlugin from "@fullcalendar/interaction";
-import listPlugin from "@fullcalendar/list";
-import {
-  Box,
-  List,
-  ListItem,
-  ListItemText,
-  Typography,
-  useTheme,
-} from "@mui/material";
-import Header from "../../components/Header";
-import { tokens } from "../../themes";
+import React, { useState } from 'react';
+import { Calendar, Badge, Alert, Button, Modal, TimePicker, Space } from 'antd'; // Import Space
+import dayjs from 'dayjs';
+import { useTheme } from '@mui/material/styles';
 
-const Calendar = () => {
+import { Box, Typography, List, ListItem, ListItemText } from '@mui/material';
+import Header from '../../components/Header';
+import { tokens } from '../../themes';
+import { PlusCircleTwoTone } from '@ant-design/icons';
+
+
+const Calender = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const [currentEvents, setCurrentEvents] = useState([]);
+  const [selectedDate, setSelectedDate] = useState(dayjs());
+  const [events, setEvents] = useState([]);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [timeRange, setTimeRange] = useState(null);
 
-  const handleDateClick = (selected) => {
-    const title = prompt("Please enter a new title for your event");
-    const calendarApi = selected.view.calendar;
-    calendarApi.unselect();
-
-    if (title) {
-      calendarApi.addEvent({
-        id: `${selected.dateStr}-${title}`,
-        title,
-        start: selected.startStr,
-        end: selected.endStr,
-        allDay: selected.allDay,
-      });
-    }
+  const handleDateClick = (date) => {
+    setSelectedDate(date);
+    setIsModalVisible(true);
   };
 
-  const handleEventClick = (selected) => {
-    if (
-      window.confirm(
-        `Are you sure you want to delete the event '${selected.event.title}'`
-      )
-    ) {
-      selected.event.remove();
+  const handleAddEvent = () => {
+    // Add the event with the selected date and time range
+    if (timeRange) {
+      setEvents([
+        ...events,
+        {
+          date: selectedDate,
+          type: 'vacation',
+          description: 'New Vacation Event',
+          timeRange: timeRange,
+        },
+      ]);
     }
+
+    // Close the modal and reset time range
+    setIsModalVisible(false);
+    setTimeRange(null);
+  };
+
+  const dateCellRender = (date) => {
+    const dayEvents = events.filter((event) => date.isSame(event.date, 'day'));
+
+    return (
+      <ul style={{ listStyle: 'none', padding: 0 }}>
+        {dayEvents.map((event, index) => (
+          <li key={index}>
+            <Badge status={event.type === 'vacation' ? 'success' : 'error'} text={event.description} />
+            <br />
+            {event.timeRange && (
+              <Typography variant="caption">
+                Time: {event.timeRange[0].format('HH:mm')} - {event.timeRange[1].format('HH:mm')}
+              </Typography>
+            )}
+          </li>
+        ))}
+      </ul>
+    );
   };
 
   return (
     <Box m="20px">
-      <Header title="Calendar" subtitle="Full Calendar Interactive Page" />
+      <Header title="Calendar" subtitle="Ant Design Calendar" />
 
       <Box display="flex" justifyContent="space-between">
         {/* CALENDAR SIDEBAR */}
@@ -60,25 +75,26 @@ const Calendar = () => {
         >
           <Typography variant="h5">Events</Typography>
           <List>
-            {currentEvents.map((event) => (
+            {events.map((event, index) => (
               <ListItem
-                key={event.id}
+                key={index}
                 sx={{
-                  backgroundColor: colors.greenAccent[500],
-                  margin: "10px 0",
-                  borderRadius: "2px",
+                  backgroundColor: event.type === 'vacation' ? colors.success[500] : colors.error[500],
+                  margin: '10px 0',
+                  borderRadius: '2px',
                 }}
               >
                 <ListItemText
-                  primary={event.title}
+                  primary={event.description}
                   secondary={
-                    <Typography>
-                      {event.start.toLocaleDateString(undefined, {
-                        year: "numeric",
-                        month: "short",
-                        day: "numeric",
-                      })}
-                    </Typography>
+                    <>
+                      <Typography>{event.date.format('YYYY-MM-DD')}</Typography>
+                      {event.timeRange && (
+                        <Typography variant="caption">
+                          Time: {event.timeRange[0].format('HH:mm')} - {event.timeRange[1].format('HH:mm')}
+                        </Typography>
+                      )}
+                    </>
                   }
                 />
               </ListItem>
@@ -88,44 +104,28 @@ const Calendar = () => {
 
         {/* CALENDAR */}
         <Box flex="1 1 100%" ml="15px">
-          <FullCalendar
-            height="75vh"
-            plugins={[
-              dayGridPlugin,
-              timeGridPlugin,
-              interactionPlugin,
-              listPlugin,
-            ]}
-            headerToolbar={{
-              left: "prev,next today",
-              center: "title",
-              right: "dayGridMonth,timeGridWeek,timeGridDay,listMonth",
-            }}
-            initialView="dayGridMonth"
-            editable={true}
-            selectable={true}
-            selectMirror={true}
-            dayMaxEvents={true}
-            select={handleDateClick}
-            eventClick={handleEventClick}
-            eventsSet={(events) => setCurrentEvents(events)}
-            initialEvents={[
-              {
-                id: "12315",
-                title: "All-day event",
-                date: "2022-09-14",
-              },
-              {
-                id: "5123",
-                title: "Timed event",
-                date: "2022-09-28",
-              },
-            ]}
-          />
+          <Alert message={`You selected date: ${selectedDate?.format('YYYY-MM-DD')}`} />
+          <Calendar value={selectedDate} onSelect={handleDateClick} dateCellRender={dateCellRender} />
         </Box>
       </Box>
+
+      {/* Modal for adding events */}
+      <Modal
+        title="Add Event"
+        visible={isModalVisible}
+        onOk={handleAddEvent}
+        onCancel={() => setIsModalVisible(false)}
+      >
+        <Space direction="vertical">
+          <TimePicker.RangePicker
+            onChange={(value) => setTimeRange(value)}
+            format="HH:mm"
+            placeholder={['Start Time', 'End Time']}
+          />
+        </Space>
+      </Modal>
     </Box>
   );
 };
 
-export default Calendar;
+export default Calender;

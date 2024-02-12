@@ -5,14 +5,16 @@ import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
 import { Menu } from 'antd';
 import {
   HomeOutlined,
-  TeamOutlined,
   ContactsOutlined,
+  TeamOutlined,
   FileTextOutlined,
   UserOutlined,
+  MessageOutlined ,
+  UserAddOutlined,
   CalendarOutlined,
   QuestionCircleOutlined,
   BarChartOutlined,
-  PieChartOutlined,
+  InfoCircleOutlined,
   LineChartOutlined,
   GlobalOutlined,
   LogoutOutlined,
@@ -82,26 +84,26 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
           <Link to="/">Dashboard</Link>
         </Menu.Item>
 
-        <SubMenu key="Data" icon={<UserOutlined />} title="Data">
-          <Menu.Item key="ManageTeam">
+        <SubMenu key="Account Setting" icon={<UserOutlined />} title="Account Setting">
+          <Menu.Item key="ManageTeam" icon={<TeamOutlined />}>
             <Link to="/team">Manage Team</Link>
           </Menu.Item>
-          <Menu.Item key="ContactsInformation">
+          <Menu.Item key="ContactsInformation" icon={<ContactsOutlined />}>
             <Link to="/contacts">Contacts Information</Link>
           </Menu.Item>
-          <Menu.Item key="InvoicesBalances">
-            <Link to="/invoices">Invoices Balances</Link>
+          <Menu.Item key="Messages" icon={<MessageOutlined />}>
+            <Link to="/invoices">Messages</Link>
           </Menu.Item>
         </SubMenu>
 
-        <SubMenu key="Pages" icon={<FileTextOutlined />} title="Pages">
-          <Menu.Item key="ProfileForm">
+        <SubMenu key="Recrutment" icon={<FileTextOutlined />} title="Recrutment">
+          <Menu.Item key="ProfileForm" icon={<UserAddOutlined />}>
             <Link to="/form">Profile Form</Link>
           </Menu.Item>
-          <Menu.Item key="Calendar">
+          <Menu.Item key="Calendar" icon={<CalendarOutlined />}>
             <Link to="/calendar">Calendar</Link>
           </Menu.Item>
-          <Menu.Item key="FAQPage">
+          <Menu.Item key="FAQPage" icon={<InfoCircleOutlined />}>
             <Link to="/faq">FAQ Page</Link>
           </Menu.Item>
         </SubMenu>

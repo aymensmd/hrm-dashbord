@@ -8,7 +8,7 @@ import Team from './scences/team/index';
 import Invoices from './scences/invoices/index';
 import Contacts from './scences/contacts/index';
 import Bar from './scences/bar/index';
-import Form from './scences/form/index';
+import EmployeeForm from './scences/form/index';
 import Line from './scences/line/index';
 import Pie from './scences/pie/index';
 import FAQ from './scences/faq/index';
@@ -47,7 +47,7 @@ function App() {
                 <Route path="/team" element={<Team />} />
                 <Route path="/contacts" element={<Contacts />} />
                 <Route path="/invoices" element={<Invoices />} />
-                <Route path="/form" element={<Form />} />
+                <Route path="/form" element={<EmployeeForm />} />
                 <Route path="/bar" element={<Bar />} />
                 <Route path="/pie" element={<Pie />} />
                 <Route path="/line" element={<Line />} />

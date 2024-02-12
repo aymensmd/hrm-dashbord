@@ -1,154 +1,123 @@
-import { Box, Button, TextField } from "@mui/material";
-import { Formik } from "formik";
-import * as yup from "yup";
-import useMediaQuery from "@mui/material/useMediaQuery";
-import Header from "../../components/Header";
+import React, { useState } from 'react';
+import { Button, DatePicker, Form, Input, Radio } from 'antd';
+import { useTheme } from '@mui/system';
 
-const Form = () => {
-  const isNonMobile = useMediaQuery("(min-width:600px)");
+const { TextArea } = Input;
 
-  const handleFormSubmit = (values) => {
-    console.log(values);
+const normFile = (e) => {
+  if (Array.isArray(e)) {
+    return e;
+  }
+  return e?.fileList;
+};
+
+const EmployeeForm = () => {
+  const [componentDisabled, setComponentDisabled] = useState(true);
+  const theme = useTheme(); // Use the useTheme hook from @mui/system
+
+  const onFinish = (values) => {
+    console.log('Received values:', values);
   };
 
   return (
-    <Box m="20px">
-      <Header title="CREATE USER" subtitle="Create a New User Profile" />
-
-      <Formik
-        onSubmit={handleFormSubmit}
-        initialValues={initialValues}
-        validationSchema={checkoutSchema}
+    <Form
+      labelCol={{
+        span: 4,
+      }}
+      wrapperCol={{
+        span: 14,
+      }}
+      layout="horizontal"
+      onFinish={onFinish}
+      initialValues={{
+        dateNaissance: null,
+        // ... other initial values
+      }}
+    >
+      {/* Personal Information */}
+      <Form.Item
+        label={<span style={{ color: theme.palette.text.primary }}>Nom</span>}
+        name="nom"
+        rules={[{ required: true, message: 'Please enter your last name!' }]}
       >
-        {({
-          values,
-          errors,
-          touched,
-          handleBlur,
-          handleChange,
-          handleSubmit,
-        }) => (
-          <form onSubmit={handleSubmit}>
-            <Box
-              display="grid"
-              gap="30px"
-              gridTemplateColumns="repeat(4, minmax(0, 1fr))"
-              sx={{
-                "& > div": { gridColumn: isNonMobile ? undefined : "span 4" },
-              }}
-            >
-              <TextField
-                fullWidth
-                variant="filled"
-                type="text"
-                label="First Name"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.firstName}
-                name="firstName"
-                error={!!touched.firstName && !!errors.firstName}
-                helperText={touched.firstName && errors.firstName}
-                sx={{ gridColumn: "span 2" }}
-              />
-              <TextField
-                fullWidth
-                variant="filled"
-                type="text"
-                label="Last Name"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.lastName}
-                name="lastName"
-                error={!!touched.lastName && !!errors.lastName}
-                helperText={touched.lastName && errors.lastName}
-                sx={{ gridColumn: "span 2" }}
-              />
-              <TextField
-                fullWidth
-                variant="filled"
-                type="text"
-                label="Email"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.email}
-                name="email"
-                error={!!touched.email && !!errors.email}
-                helperText={touched.email && errors.email}
-                sx={{ gridColumn: "span 4" }}
-              />
-              <TextField
-                fullWidth
-                variant="filled"
-                type="text"
-                label="Contact Number"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.contact}
-                name="contact"
-                error={!!touched.contact && !!errors.contact}
-                helperText={touched.contact && errors.contact}
-                sx={{ gridColumn: "span 4" }}
-              />
-              <TextField
-                fullWidth
-                variant="filled"
-                type="text"
-                label="Address 1"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.address1}
-                name="address1"
-                error={!!touched.address1 && !!errors.address1}
-                helperText={touched.address1 && errors.address1}
-                sx={{ gridColumn: "span 4" }}
-              />
-              <TextField
-                fullWidth
-                variant="filled"
-                type="text"
-                label="Address 2"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.address2}
-                name="address2"
-                error={!!touched.address2 && !!errors.address2}
-                helperText={touched.address2 && errors.address2}
-                sx={{ gridColumn: "span 4" }}
-              />
-            </Box>
-            <Box display="flex" justifyContent="end" mt="20px">
-              <Button type="submit" color="secondary" variant="contained">
-                Create New User
-              </Button>
-            </Box>
-          </form>
-        )}
-      </Formik>
-    </Box>
+        <Input />
+      </Form.Item>
+      <Form.Item
+        label={<span style={{ color: theme.palette.text.primary }}>Prénom</span>}
+        name="prenom"
+        rules={[{ required: true, message: 'Please enter your first name!' }]}
+      >
+        <Input />
+      </Form.Item>
+      <Form.Item
+        label={<span style={{ color: theme.palette.text.primary }}>Date de naissance</span>}
+        name="dateNaissance"
+        rules={[{ required: true, message: 'Please select the date of birth!' }]}
+      >
+        <DatePicker style={{ width: '100%' }} />
+      </Form.Item>
+      <Form.Item
+        label={<span style={{ color: theme.palette.text.primary }}>Sexe</span>}
+        name="sexe"
+        rules={[{ required: true, message: 'Please select your gender!' }]}
+      >
+        <Radio.Group >
+          <Radio style={{ color: theme.palette.text.primary  }} value="male">Male</Radio>
+          <Radio style={{ color: theme.palette.text.primary  }} value="female">Female</Radio>
+        </Radio.Group>
+      </Form.Item>
+      {/* ... Other personal information fields ... */}
+
+      {/* Professional Information */}
+      <Form.Item
+        label={<span style={{ color: theme.palette.text.primary }}>Fonction</span>}
+        name="fonction"
+        rules={[{ required: true, message: 'Please enter your position!' }]}
+      >
+        <Input />
+      </Form.Item>
+      <Form.Item
+        label={<span style={{ color: theme.palette.text.primary }}>Département</span>}
+        name="departement"
+        rules={[{ required: true, message: 'Please enter your department!' }]}
+      >
+        <Input />
+      </Form.Item>
+      <Form.Item
+        label={<span style={{ color: theme.palette.text.primary }}>Date d'embauche</span>}
+        name="dateEmbauche"
+        rules={[{ required: true, message: 'Please select the date of hire!' }]}
+      >
+        <DatePicker style={{ width: '100%' }} />
+      </Form.Item>
+      {/* ... Other professional information fields ... */}
+
+      {/* Contact Information */}
+      <Form.Item
+        label={<span style={{ color: theme.palette.text.primary }}>Numéro de téléphone</span>}
+        name="telephone"
+        rules={[{ required: true, message: 'Please enter your phone number!' }]}
+      >
+        <Input />
+      </Form.Item>
+      <Form.Item
+        label={<span style={{ color: theme.palette.text.primary }}>Adresse e-mail</span>}
+        name="email"
+        rules={[
+          { required: true, type: 'email', message: 'Please enter a valid email address!' },
+        ]}
+      >
+        <Input />
+      </Form.Item>
+      {/* ... Other contact information fields ... */}
+
+      <Form.Item wrapperCol={{ offset: 4, span: 14 }}>
+        <Button type="primary" htmlType="submit">
+          Submit
+        </Button>
+      </Form.Item>
+    </Form>
   );
 };
 
-const phoneRegExp =
-  /^((\+[1-9]{1,4}[ -]?)|(\([0-9]{2,3}\)[ -]?)|([0-9]{2,4})[ -]?)*?[0-9]{3,4}[ -]?[0-9]{3,4}$/;
-
-const checkoutSchema = yup.object().shape({
-  firstName: yup.string().required("required"),
-  lastName: yup.string().required("required"),
-  email: yup.string().email("invalid email").required("required"),
-  contact: yup
-    .string()
-    .matches(phoneRegExp, "Phone number is not valid")
-    .required("required"),
-  address1: yup.string().required("required"),
-  address2: yup.string().required("required"),
-});
-const initialValues = {
-  firstName: "",
-  lastName: "",
-  email: "",
-  contact: "",
-  address1: "",
-  address2: "",
-};
-
-export default Form;
+export default EmployeeForm;
